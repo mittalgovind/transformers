@@ -516,6 +516,54 @@ class WnliProcessor(DataProcessor):
         return examples
 
 
+class BoolqProcessor(DataProcessor):
+    """Processor for boolean questions task"""
+
+    def get_example_from_tensor_dict(self, tensor_dict):
+        """Gets an example from a dict with tensorflow tensors
+        Args:
+            tensor_dict: Keys and values should match the corresponding Glue
+                tensorflow_dataset examples.
+        """
+        return InputExample(
+            tensor_dict["idx"].numpy(),
+            tensor_dict["question"].numpy().decode("utf-8"),
+            tensor_dict["answer"].numpy().decode("utf-8"),
+            str(tensor_dict["label"].numpy())
+        )
+
+    def get_train_examples(self, data_dir):
+        """Gets a collection of `InputExample`s for the train set."""
+        raise self._create_examples(os.path.join(data_dir, 'train.jsonl'), "train")
+
+    def get_dev_examples(self, data_dir):
+        """Gets a collection of `InputExample`s for the dev set."""
+        raise self._create_examples(os.path.join(data_dir, 'val.jsonl'), "val")
+
+    def get_labels(self):
+        """Gets the list of labels for this data set."""
+        return ["0", "1"]
+
+    def _create_examples(self, filepath, set_type):
+        examples = []
+        with open(filepath) as file:
+            lines = list(file)
+            for (i, line) in enumerate(lines):
+                if i == 0:
+                    continue
+                line_dict = json.loads(line[:-1])
+                guid = "%s-%s".format(set_type, line_dict['idx'])
+                text_a = str(line_dict["passage"])
+                text_b = str(line_dict["question"])
+                label = str(line_dict["label"].numpy())
+                examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
+        return examples
+
+
+
+
+
+
 glue_tasks_num_labels = {
     "cola": 2,
     "mnli": 3,
@@ -526,6 +574,7 @@ glue_tasks_num_labels = {
     "qnli": 2,
     "rte": 2,
     "wnli": 2,
+    "boolq": 2,    
 }
 
 glue_processors = {
@@ -539,6 +588,7 @@ glue_processors = {
     "qnli": QnliProcessor,
     "rte": RteProcessor,
     "wnli": WnliProcessor,
+    "boolq": BoolqProcessor,
 }
 
 glue_output_modes = {
@@ -552,4 +602,5 @@ glue_output_modes = {
     "qnli": "classification",
     "rte": "classification",
     "wnli": "classification",
+    "boolq": "classification",
 }
