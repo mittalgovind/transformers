@@ -75,6 +75,8 @@ if _has_sklearn:
         elif task_name == "hans":
             return {"acc": simple_accuracy(preds, labels)}
         elif task_name == "boolq":
+            from pdb import set_trace
+            set_trace()
             return {"acc": simple_accuracy(preds, labels)}
         else:
             raise KeyError(task_name)

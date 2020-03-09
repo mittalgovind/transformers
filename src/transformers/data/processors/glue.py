@@ -558,6 +558,7 @@ class BoolqProcessor(DataProcessor):
                 text_b = str(line_dict["question"])
                 label = str(int(line_dict["label"]))
                 examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
+        print ('{} {} samples loaded for BoolQ task'.format(len(examples), set_type)) 
         return examples
 
 
