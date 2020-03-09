@@ -17,6 +17,7 @@
 
 import logging
 import os
+import json
 
 from ...file_utils import is_tf_available
 from .utils import DataProcessor, InputExample, InputFeatures
@@ -534,11 +535,11 @@ class BoolqProcessor(DataProcessor):
 
     def get_train_examples(self, data_dir):
         """Gets a collection of `InputExample`s for the train set."""
-        raise self._create_examples(os.path.join(data_dir, 'train.jsonl'), "train")
+        return self._create_examples(os.path.join(data_dir, 'train.jsonl'), "train")
 
     def get_dev_examples(self, data_dir):
         """Gets a collection of `InputExample`s for the dev set."""
-        raise self._create_examples(os.path.join(data_dir, 'val.jsonl'), "val")
+        return self._create_examples(os.path.join(data_dir, 'val.jsonl'), "val")
 
     def get_labels(self):
         """Gets the list of labels for this data set."""
@@ -555,7 +556,7 @@ class BoolqProcessor(DataProcessor):
                 guid = "%s-%s".format(set_type, line_dict['idx'])
                 text_a = str(line_dict["passage"])
                 text_b = str(line_dict["question"])
-                label = str(line_dict["label"].numpy())
+                label = str(int(line_dict["label"]))
                 examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
         return examples
 
