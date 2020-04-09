@@ -557,13 +557,10 @@ class BoolqProcessor(DataProcessor):
                 text_a = str(line_dict["passage"])
                 text_b = str(line_dict["question"])
                 label = str(int(line_dict["label"]))
+                import pdb
+                pdb.set_trace()
                 examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
-        print ('{} {} samples loaded for BoolQ task'.format(len(examples), set_type)) 
         return examples
-
-
-
-
 
 
 glue_tasks_num_labels = {
